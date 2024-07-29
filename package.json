@@ -12,7 +12,8 @@
   "types": "./dist/index.d.ts",
   "files": ["dist"],
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "test": "npx tsc --noEmit"
   },
   "keywords": [
     "mock",
