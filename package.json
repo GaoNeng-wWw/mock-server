@@ -1,16 +1,18 @@
 {
   "name": "@gaonengwww/mock-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A tiny mock server, zero dependencies",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.js"
     }
   },
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "test": "npx tsc --noEmit"
