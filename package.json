@@ -8,12 +8,16 @@
       "require": "./dist/index.js"
     }
   },
+  "bin": {
+    "mock-server": "./dist/cli.js"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
+    "dev": "tsup && node dist/cli.js",
     "build": "tsup",
     "test": "npx tsc --noEmit"
   },
@@ -28,12 +32,14 @@
   "author": "gaonengwww",
   "license": "MIT",
   "devDependencies": {
+    "@types/commander": "^2.12.2",
     "@types/node": "^22.0.0",
     "tsup": "^8.2.3",
     "typescript": "^5.5.4"
   },
   "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903",
   "dependencies": {
+    "commander": "^12.1.0",
     "fast-glob": "^3.3.2"
   },
   "homepage": "https://github.com/GaoNeng-wWw/mock-server.git"
