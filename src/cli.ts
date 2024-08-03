@@ -3,6 +3,8 @@
 import {program} from 'commander';
 import { createMockServer } from '.';
 const app = program
+  .name(__NAME__)
+  .version(__VER__)
   .option('-p, --port <number>', 'mock server port', parseInt)
   .option('-g, --glob <string>', 'glob pattern')
   .option('-h, --host <string>', 'mock server host')

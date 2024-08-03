@@ -4,7 +4,6 @@
 
 ## Usages
 
-
 1. Install
 
 ```typescript
@@ -174,6 +173,12 @@ createMockServer({
 ```bash
 curl -o /dev/null -s -w "%{time_starttransfer} - %{time_total}" http://localhost:8848/api/test
 1.511512 - 1.51158
+```
+
+### Cli
+
+```
+mock-server -h
 ```
 
 ## license

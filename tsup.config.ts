@@ -1,3 +1,4 @@
+import {version} from './package.json';
 import {defineConfig} from 'tsup';
 export default defineConfig({
   entry: ['./src/index.ts', './src/cli.ts'],
@@ -6,4 +7,8 @@ export default defineConfig({
   outDir: 'dist',
   dts: true,
   format: ['cjs','esm'],
+  define: {
+    __VER__: `'${version}'`,
+    __NAME__: `'mock-server'`
+  }
 })
