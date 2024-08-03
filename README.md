@@ -1,7 +1,6 @@
 # mock server
 
 > A streamlined HTTP mock server
-> Zero dependency
 
 ## Usages
 
