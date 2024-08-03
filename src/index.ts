@@ -1,4 +1,6 @@
+import * as fg from 'fast-glob';
 import {IncomingMessage,ServerResponse,createServer} from 'node:http';
+import { isAbsolute } from 'node:path';
 import { URL } from 'node:url';
 interface MockMethod {
   url: string;
@@ -25,6 +27,8 @@ export interface BootstarpOption {
   mocks: MockMethod[];
   port: number;
   hostname: string;
+  pattern: string;
+  patternOption: fg.Options
 }
 export interface Router {
   [url:string]: {
@@ -76,14 +80,42 @@ const sleep = (time: number) => {
   })
 }
 
-export function createMockServer(opt: Partial<BootstarpOption>){
+export async function createMockServer(opt: Partial<BootstarpOption>){
   const {
     mocks=[],
     port=8848,
-    hostname='0.0.0.0'
+    hostname='0.0.0.0',
+    pattern = '',
+    patternOption = {}
   } = opt;
   const log = useLog('[App]');
   const routerLog = useLog('[App][Router]')
+  if (pattern) {
+    const paths = fg.sync(pattern, {
+      ...patternOption
+    })
+    paths.forEach((value: string)=>{
+      log(`Discover ${value}!`);
+    })
+    const importTasks:Promise<any>[] = [];
+    for (const path of paths)  {
+      const importTask = import(
+        isAbsolute(path) ? `file://${path}` : path
+      );
+      importTasks.push(importTask);
+    }
+    const methods = Promise.all(importTasks)
+    .then((modules)=>{
+      return modules.map((m)=>{
+        return m.default ?? m
+      })
+    })
+    .catch((reason) => {
+      console.error(reason);
+      process.exit(-1);
+    })
+    mocks.push(...(await methods) ?? []);
+  }
   const server = createServer();
   const router:Router = {};
   mocks
@@ -139,11 +171,14 @@ export function createMockServer(opt: Partial<BootstarpOption>){
   })
   server.listen(port, hostname, ()=>{
     // console.clear();
+    if (!Object.entries(router).length){
+      routerLog('No route found!');
+    }
     for (const [path, route] of Object.entries(router)){
       for (const method of Object.keys(route)){
         routerLog(`[${method.toUpperCase()}]`, path)
       }
     }
-    log(`start at http://${hostname}:${port}/`)
+    log(`Start at http://${hostname}:${port}/`)
   });
 }
