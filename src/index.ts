@@ -80,6 +80,13 @@ const sleep = (time: number) => {
   })
 }
 
+export function is(val: unknown, type: string) {
+  return toString.call(val) === `[object ${type}]`
+}
+
+const isFunction = (val:unknown): val is Function => {
+  return is(val, 'Function') || is(val, 'AsyncFunction')
+}
 export async function createMockServer(opt: Partial<BootstarpOption>){
   const {
     mocks=[],
@@ -120,15 +127,19 @@ export async function createMockServer(opt: Partial<BootstarpOption>){
   const router:Router = {};
   mocks
   .forEach((mock)=>{
-    const {url,method,response,statusCode,timeout} = mock;
+    const url = mock.url;
+    const method = mock.method?.toLowerCase() ?? 'get';
+    const response = mock.response ?? (()=>{});
+    const timeout = mock.timeout ?? 0;
+    const statusCode = mock.statusCode ?? 200;
     if (!Object.keys(router[url] ?? {}).length){
       router[url] = {};
     }
-    if (!router[url][method ?? 'get']) {
-      router[url][method ?? 'get'] = {
+    if (!router[url][method?.toLowerCase() ?? 'get']) {
+      router[url][method?.toLowerCase() ?? 'get'] = {
         response,
         statusCode:statusCode ?? 200,
-        timeout: timeout ?? 2000
+        timeout: timeout ?? 0
       }
     }
   })
@@ -165,6 +176,7 @@ export async function createMockServer(opt: Partial<BootstarpOption>){
       res.writeHead(route.statusCode ?? 200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(ret));
     }
+    console.log(`Invoke ${methods}-${url}`)
   })
   server.on('error', (e) => {
     console.log(e);
