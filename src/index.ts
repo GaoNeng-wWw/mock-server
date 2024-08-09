@@ -152,9 +152,10 @@ export async function createMockServer(opt: Partial<BootstarpOption>){
     }
     const methods = req.method?.toLowerCase() ?? 'get';
     const route = router[pathname][methods];
-    if (!router){
+    if (!route){
       res.writeHead(404, { 'Content-Type': 'application/json' });
       res.end(''); 
+      return;
     }
     if (!route.response){
       res.writeHead(404, { 'Content-Type': 'application/json' });
